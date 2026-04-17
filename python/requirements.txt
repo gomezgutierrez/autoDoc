@@ -1,0 +1,16 @@
+# AutoDoc — Python dependencies (OCR fallback)
+# Instalar con: pip install -r requirements.txt
+
+# OCR engine (requiere Tesseract instalado en el sistema)
+pytesseract>=0.3.10
+
+# Procesado de imágenes (usar >= para permitir wheels pre-compilados en Windows)
+Pillow>=10.0.0
+
+# Conversión PDF → imágenes (requiere Poppler en el PATH del sistema)
+pdf2image>=1.16.0
+
+# Opcional: clasificación zero-shot con ML (requiere descarga de modelo ~1.5 GB)
+# Descomentar solo si quieres usar transformers en lugar de keywords
+# transformers==4.40.0
+# torch==2.3.0
