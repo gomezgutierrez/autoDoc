@@ -67,16 +67,27 @@ async function sendToManualReview(documents, options = {}) {
 
     try {
       const datePart = formatDateForFilename(doc.metadata.emailDate);
-      const safeName = (doc.originalName || 'documento')
+      const sanitizedOriginal = (doc.originalName || 'documento')
         .replace(/[^a-z0-9._-]/gi, '_')
-        .slice(0, 60);
-      const folderName = `${datePart}_${safeName}_${doc.id.slice(0, 4)}`;
+        .slice(0, 50);
+
+      // Si tenemos una categoría estimada (aunque sea de baja confianza), la usamos en el nombre de la carpeta
+      const catLabel = (doc.category && doc.category !== 'otros') 
+        ? `POSIBLE_${doc.category.toUpperCase()}` 
+        : 'SIN_CLASIFICAR';
+
+      const folderName = `${datePart}_${catLabel}_${doc.id.slice(0, 4)}`;
       const reviewDir  = path.join(reviewBase, folderName);
 
       await ensureDir(reviewDir);
 
       const srcPath = doc.paths.current;
-      const destPdf = path.join(reviewDir, 'documento.pdf');
+      // Mantener el nombre original del archivo pero asegurar extensión .pdf si fue convertido
+      const finalFileName = sanitizedOriginal.toLowerCase().endsWith('.pdf') 
+        ? sanitizedOriginal 
+        : `${sanitizedOriginal}.pdf`;
+        
+      const destPdf = path.join(reviewDir, finalFileName);
       
       let manifest;
       try {

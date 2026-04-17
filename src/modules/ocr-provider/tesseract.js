@@ -31,9 +31,7 @@ class TesseractProvider extends BaseOcrProvider {
    */
   async extractText(filePath) {
     const startTime = Date.now();
-    const scriptPath = path.resolve(
-      __dirname, '../../../../python/classifier.py'
-    );
+    const scriptPath = path.resolve(config.rootDir, 'python', 'classifier.py');
 
     return new Promise((resolve) => {
       const child = spawn(

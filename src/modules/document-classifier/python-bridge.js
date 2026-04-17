@@ -35,12 +35,15 @@ const PYTHON_TIMEOUT_MS = 60_000; // 60 segundos max por fichero
  * @param {string} filePath - Ruta absoluta al PDF a clasificar
  * @returns {Promise<{ category: string, confidence: number, textSnippet: string }>}
  */
+async function classifyWithPython(filePath) {
   return new Promise((resolve) => {
-    const scriptPath = path.join(config.rootDir, 'python/classifier.py');
+    // Usamos path.resolve para garantizar una ruta absoluta correcta basada en la raíz del proyecto
+    const scriptPath = path.resolve(config.rootDir, 'python', 'classifier.py');
 
     logger.info('Invocando clasificador Python...', {
       file: path.basename(filePath),
       script: scriptPath,
+      rootDir: config.rootDir
     });
 
     const child = spawn(config.pythonPath, [scriptPath, '--file', filePath, '--format', 'json'], {

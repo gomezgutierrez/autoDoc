@@ -129,7 +129,12 @@ async function runPipeline(options = {}) {
           // F. Organizar o Enviar a Review
           if (doc.status === 'review') {
             [doc] = await sendToManualReview([doc], options);
-            summary.docsReview++;
+            if (doc.paths.final && doc.paths.final.includes('review')) {
+              summary.docsReview++;
+            } else {
+              allDocsHandled = false;
+              summary.docsError++;
+            }
           } else {
             [doc] = await organizeDocuments([doc], options);
             if (doc.status === 'done') {
@@ -146,7 +151,8 @@ async function runPipeline(options = {}) {
         }
       }
 
-      // G. MARCAR COMO LEÍDO (Sólo si no hubo errores críticos en ningún adjunto)
+      // G. MARCAR COMO LEÍDO (Desactivado temporalmente por petición del usuario para pruebas)
+      /*
       if (allDocsHandled && !options.dryRun) {
         try {
           await markEmailAsSeen(email.uid);
@@ -158,6 +164,8 @@ async function runPipeline(options = {}) {
       } else if (!allDocsHandled) {
         logger.warn(`Email NO marcado como leído por errores en adjuntos: ${email.uid}`);
       }
+      */
+      logger.info(`[MODO PRUEBA] Correo UID ${email.uid} dejado como NO LEÍDO.`);
     }
 
   } catch (err) {

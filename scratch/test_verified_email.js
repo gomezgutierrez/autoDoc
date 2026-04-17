@@ -29,6 +29,7 @@ async function testSingleEmail() {
     }
 
     logger.info(`Correo detectado con UID: ${targetEmail.uid}. Procesando...`);
+    let allDocsHandled = true;
 
     // 2. Descargar
     const [emailRecord] = await downloadAttachments([targetEmail]);
@@ -63,9 +64,16 @@ async function testSingleEmail() {
       }
     }
 
-    // 4. Marcar como leído
-    await markEmailAsSeen(targetEmail.uid);
-    logger.info('Email de prueba completado y marcado como leído.');
+    // 4. Marcar como leído (Desactivado temporalmente para pruebas)
+    /*
+    if (allDocsHandled) {
+      await markEmailAsSeen(targetEmail.uid);
+      logger.info('Email de prueba completado y marcado como leído.');
+    } else {
+      logger.warn('Email de prueba NO marcado como leído por fallos en el proceso.');
+    }
+    */
+    logger.info(`[MODO PRUEBA] Correo UID ${targetEmail.uid} dejado como NO LEÍDO.`);
 
   } catch (err) {
     logger.error('Error en el test:', err);
